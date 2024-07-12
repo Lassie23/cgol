@@ -20,7 +20,7 @@ void draw(int board[bx * by]) {
     clear();
     for (int x = 0; x < bx; x++) {
         for (int y = 0; y < by; y++) {
-            if (board[x * bx + y] == 1) {
+            if (board[y * bx + x] == 1) {
                 mvprintw(y, x*2, "██");
             }
         }
@@ -30,14 +30,14 @@ void draw(int board[bx * by]) {
 
 int count_live_neighbours(int board[bx * by], int x, int y) {
     return \
-           board[((x - 1) % bx) * bx + ((y - 1) % by)] \
-         + board[  x            * bx + ((y - 1) % by)] \
-         + board[((x + 1) % bx) * bx + ((y - 1) % by)] \
-         + board[((x - 1) % bx) * bx +   y           ] \
-         + board[((x + 1) % bx) * bx +   y           ] \
-         + board[((x - 1) % bx) * bx + ((y + 1) % by)] \
-         + board[  x            * bx + ((y + 1) % by)] \
-         + board[((x + 1) % bx) * bx + ((y + 1) % by)];
+           board[((y - 1) % by) * bx + ((x - 1) % bx)] \
+         + board[((y - 1) % by) * bx +   x           ] \
+         + board[((y - 1) % by) * bx + ((x + 1) % bx)] \
+         + board[  y            * bx + ((x - 1) % bx)] \
+         + board[  y            * bx + ((x + 1) % bx)] \
+         + board[((y + 1) % by) * bx + ((x - 1) % bx)] \
+         + board[((y + 1) % by) * bx +   x           ] \
+         + board[((y + 1) % by) * bx + ((x + 1) % bx)];
 }
 
 int main(int argc, char *argv[]) {
@@ -80,7 +80,7 @@ int main(int argc, char *argv[]) {
     int board[bx * by];
     for (int x = 0; x < bx; x++) {
         for (int y = 0; y < by; y++) {
-            board[x * bx + y] = rand() % 3 % 2;
+            board[y * bx + x] = rand() % 3 % 2;
         }
     }
     int counts[bx * by];
@@ -104,19 +104,19 @@ int main(int argc, char *argv[]) {
             // count neighbors
             for (int x = 0; x < bx; x++) {
                 for (int y = 0; y < by; y++) {
-                    counts[x * bx + y] = count_live_neighbours(board, x, y);
+                    counts[y * bx + x] = count_live_neighbours(board, x, y);
                 }
             }
             // update the board from counts
             for (int x = 0; x < bx; x++) {
                 for (int y = 0; y < by; y++) {
-                    if (board[x * bx + y]) {
-                        if (!(counts[x * bx + y] == 2 || counts[x * bx + y] == 3)) {
-                            board[x * bx + y] = 0;
+                    if (board[y * bx + x]) {
+                        if (!(counts[y * bx + x] == 2 || counts[y * bx + x] == 3)) {
+                            board[y * bx + x] = 0;
                         }
                     } else {
-                        if (counts[x * bx + y] == 3) {
-                            board[x * bx + y] = 1;
+                        if (counts[y * bx + x] == 3) {
+                            board[y * bx + x] = 1;
                         }
                     }
                 }
@@ -135,7 +135,7 @@ int main(int argc, char *argv[]) {
                 if (getmouse(&event) == OK) {
                     refresh();
                     if (event.bstate & BUTTON1_PRESSED) {
-                        board[event.x/2 * bx + event.y] = !board[event.x/2 * bx + event.y];
+                        board[event.y * bx + event.x/2] = !board[event.y * bx + event.x/2];
                         draw(board);
                     }
                 }
@@ -146,7 +146,7 @@ int main(int argc, char *argv[]) {
             case 'r':
                 for (int x = 0; x < bx; x++) {
                     for (int y = 0; y < by; y++) {
-                        board[x * bx + y] = rand() % 3 % 2;
+                        board[y * bx + x] = rand() % 3 % 2;
                     }
                 }
                 draw(board);
@@ -154,7 +154,7 @@ int main(int argc, char *argv[]) {
             case 'c':
                 for (int x = 0; x < bx; x++) {
                     for (int y = 0; y < by; y++) {
-                        board[x * bx + y] = 0;
+                        board[y * bx + x] = 0;
                     }
                 }
                 draw(board);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
             case 'i':
                 for (int x = 0; x < bx; x++) {
                     for (int y = 0; y < by; y++) {
-                        board[x * bx + y] = !board[x * bx + y];
+                        board[y * bx + x] = !board[y * bx + x];
                     }
                 }
                 draw(board);
