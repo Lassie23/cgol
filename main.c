@@ -3,9 +3,15 @@
 #include <string.h>
 #include <ncurses.h>
 #include <locale.h>
+#include <unistd.h>
+#include <ctype.h>
 
-int bx, by;
-int delay_time = 250;
+int bx = 50, by = 50;
+int delay_time = 100;
+int survival[] = {2, 3};
+int s_size = 2;
+int birth[] = {3};
+int b_size = 1;
 
 void delay(int milli_seconds) {
     // Storing start time
@@ -40,41 +46,89 @@ int count_live_neighbours(int board[bx * by], int x, int y) {
          + board[((y + 1) % by) * bx + ((x + 1) % bx)];
 }
 
-int main(int argc, char *argv[]) {
-    if (argc < 3 || argc > 4) {
-        return 1;
-    }
-    int isNumber = 1;
+int isNumber(char *s) {
+    int is = 1;
     int z = 0;
-    while (z<strlen(argv[1]) && isNumber == 1) {
-        if (argv[1][z] < "0"[0] || argv[1][z] > "9"[0]) {
-            isNumber = 0;
+    while (z<strlen(s) && is == 1) {
+        if (s[z] < "0"[0] || s[z] > "9"[0]) {
+            is = 0;
         }
         z++;
     }
-    z = 0;
-    while (z<strlen(argv[2]) && isNumber == 1) {
-        if (argv[2][z] < "0"[0] || argv[2][z] > "9"[0]) {
-            isNumber = 0;
-        }
-        z++;
-    }
-    if (argc == 4) {
-        z = 0;
-        while (z<strlen(argv[2]) && isNumber == 1) {
-            if (argv[2][z] < "0"[0] || argv[2][z] > "9"[0]) {
-                isNumber = 0;
-            }
-            z++;
+    return is;
+}
+
+int isinarray(int val, int *arr, size_t size) {
+    for (int i = 0; i < size; i++) {
+        if (arr[i] == val) {
+            return 1;
         }
     }
-    if (isNumber == 0) {
-        return 1;
-    }
-    bx = atoi(argv[1]);
-    by = atoi(argv[2]);
-    if (argc == 4) {
-        delay_time = atoi(argv[3]);
+    return 0;
+}
+
+int main(int argc, char *argv[]) {
+    int c;
+    while ((c = getopt(argc, argv, "x:y:d:s:b:")) != -1) {
+        switch (c) {
+            case 'x':
+                if (isNumber(optarg)) {
+                    bx = atoi(optarg);
+                } else {
+                    fprintf (stderr, "Option -%c must be a number.\n", optopt);
+                    return 1;
+                }
+                break;
+            case 'y':
+                if (isNumber(optarg)) {
+                    by = atoi(optarg);
+                } else {
+                    fprintf (stderr, "Option -%c must be a number.\n", optopt);
+                    return 1;
+                }
+                break;
+            case 'd':
+                if (isNumber(optarg)) {
+                    delay_time = atoi(optarg);
+                } else {
+                    fprintf (stderr, "Option -%c must be a number.\n", optopt);
+                    return 1;
+                }
+                break;
+            case 's':
+                if (isNumber(optarg)) {
+                    s_size = strlen(optarg);
+                    for (int z = 0; z < s_size; z++) {
+                        survival[z] = optarg[z] - '0';
+                    }
+                } else {
+                    fprintf (stderr, "Option -%c must be a number.\n", optopt);
+                    return 1;
+                }
+                break;
+            case 'b':
+                if (isNumber(optarg)) {
+                    b_size = strlen(optarg);
+                    for (int z = 0; z < b_size; z++) {
+                        birth[z] = optarg[z] - '0';
+                    }
+                } else {
+                    fprintf (stderr, "Option -%c must be a number.\n", optopt);
+                    return 1;
+                }
+                break;
+            case '?':
+                if (optopt == 'x' || optopt == 'y' || optopt == 'd') {
+                    fprintf (stderr, "Option -%c requires an argument.\n", optopt);
+                } else if (isprint (optopt)) {
+                    fprintf (stderr, "Unknown option `-%c'.\n", optopt);
+                } else {
+                    fprintf (stderr, "Unknown option character `\\x%x'.\n", optopt);
+                }
+                return 1;
+            default:
+                abort ();
+        }
     }
     srand(time(0));
     int board[bx * by];
@@ -111,21 +165,22 @@ int main(int argc, char *argv[]) {
             for (int x = 0; x < bx; x++) {
                 for (int y = 0; y < by; y++) {
                     if (board[y * bx + x]) {
-                        if (!(counts[y * bx + x] == 2 || counts[y * bx + x] == 3)) {
+                        if (!isinarray(counts[y * bx + x], survival, s_size)) {
                             board[y * bx + x] = 0;
                         }
                     } else {
-                        if (counts[y * bx + x] == 3) {
+                        if (isinarray(counts[y * bx + x], birth, b_size)) {
                             board[y * bx + x] = 1;
                         }
                     }
                 }
             }
             draw(board);
-            delay(delay_time);
             if (once) {
                 running = 0;
                 once = 0;
+            } else {
+                delay(delay_time);
             }
         }
         refresh();
