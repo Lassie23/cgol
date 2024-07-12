@@ -85,31 +85,57 @@ int main(int argc, char *argv[]) {
     }
     int counts[bx * by];
     setlocale(LC_ALL, "");
+    MEVENT event;
     initscr();
+    raw();
+    keypad(stdscr, TRUE);
+    nodelay(stdscr, TRUE);
+    noecho();
+    clear();
+	cbreak();
+    mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
     draw(board);
     delay(delay_time);
-    for (;;) {
-        // count neighbors
-        for (int x = 0; x < bx; x++) {
-            for (int y = 0; y < by; y++) {
-                counts[x * bx + y] = count_live_neighbours(board, x, y);
+    int ch;
+    int running = 1;
+    while ((ch = getch()) != 'q') {
+        if (running) {
+            // count neighbors
+            for (int x = 0; x < bx; x++) {
+                for (int y = 0; y < by; y++) {
+                    counts[x * bx + y] = count_live_neighbours(board, x, y);
+                }
             }
-        }
-        // update the board from counts
-        for (int x = 0; x < bx; x++) {
-            for (int y = 0; y < by; y++) {
-                if (board[x * bx + y]) {
-                    if (!(counts[x * bx + y] == 2 || counts[x * bx + y] == 3)) {
-                        board[x * bx + y] = 0;
-                    }
-                } else {
-                    if (counts[x * bx + y] == 3) {
-                        board[x * bx + y] = 1;
+            // update the board from counts
+            for (int x = 0; x < bx; x++) {
+                for (int y = 0; y < by; y++) {
+                    if (board[x * bx + y]) {
+                        if (!(counts[x * bx + y] == 2 || counts[x * bx + y] == 3)) {
+                            board[x * bx + y] = 0;
+                        }
+                    } else {
+                        if (counts[x * bx + y] == 3) {
+                            board[x * bx + y] = 1;
+                        }
                     }
                 }
             }
+            draw(board);
+            delay(delay_time);
         }
-        draw(board);
-        delay(delay_time);
+        refresh();
+        if (ch == KEY_MOUSE) {
+            refresh();
+            if (getmouse(&event) == OK) {
+                refresh();
+                if (event.bstate & BUTTON1_PRESSED) {
+                    board[event.x/2 * bx + event.y] = !board[event.x/2 * bx + event.y];
+                    draw(board);
+                }
+            }
+        } else if (ch == ' ') {
+            running = !running;
+        }
     }
+    endwin();
 }
