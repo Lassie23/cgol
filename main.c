@@ -17,12 +17,11 @@ void delay(int milli_seconds) {
 }
 
 void draw(int board[bx * by]) {
+    clear();
     for (int x = 0; x < bx; x++) {
         for (int y = 0; y < by; y++) {
             if (board[x * bx + y] == 1) {
                 mvprintw(y, x*2, "██");
-            } else {
-                mvprintw(y, x*2, "  ");
             }
         }
     }
