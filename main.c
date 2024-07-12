@@ -124,17 +124,28 @@ int main(int argc, char *argv[]) {
             delay(delay_time);
         }
         refresh();
-        if (ch == KEY_MOUSE) {
-            refresh();
-            if (getmouse(&event) == OK) {
+        switch (ch) {
+            case KEY_MOUSE:
                 refresh();
-                if (event.bstate & BUTTON1_PRESSED) {
-                    board[event.x/2 * bx + event.y] = !board[event.x/2 * bx + event.y];
-                    draw(board);
+                if (getmouse(&event) == OK) {
+                    refresh();
+                    if (event.bstate & BUTTON1_PRESSED) {
+                        board[event.x/2 * bx + event.y] = !board[event.x/2 * bx + event.y];
+                        draw(board);
+                    }
                 }
-            }
-        } else if (ch == ' ') {
-            running = !running;
+                break;
+            case ' ':
+                running = !running;
+                break;
+            case 'r':
+                for (int x = 0; x < bx; x++) {
+                    for (int y = 0; y < by; y++) {
+                        board[x * bx + y] = rand() % 3 % 2;
+                    }
+                }
+                draw(board);
+                break;
         }
     }
     endwin();
