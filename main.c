@@ -92,7 +92,7 @@ int main(int argc, char *argv[]) {
     nodelay(stdscr, TRUE);
     noecho();
     clear();
-	cbreak();
+    cbreak();
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
     draw(board);
     delay(delay_time);
