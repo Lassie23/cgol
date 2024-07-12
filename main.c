@@ -98,6 +98,7 @@ int main(int argc, char *argv[]) {
     delay(delay_time);
     int ch;
     int running = 1;
+    int once = 0;
     while ((ch = getch()) != 'q') {
         if (running) {
             // count neighbors
@@ -122,6 +123,10 @@ int main(int argc, char *argv[]) {
             }
             draw(board);
             delay(delay_time);
+            if (once) {
+                running = 0;
+                once = 0;
+            }
         }
         refresh();
         switch (ch) {
@@ -145,6 +150,26 @@ int main(int argc, char *argv[]) {
                     }
                 }
                 draw(board);
+                break;
+            case 'c':
+                for (int x = 0; x < bx; x++) {
+                    for (int y = 0; y < by; y++) {
+                        board[x * bx + y] = 0;
+                    }
+                }
+                draw(board);
+                break;
+            case 'i':
+                for (int x = 0; x < bx; x++) {
+                    for (int y = 0; y < by; y++) {
+                        board[x * bx + y] = !board[x * bx + y];
+                    }
+                }
+                draw(board);
+                break;
+            case 's':
+                running = 1;
+                once = 1;
                 break;
         }
     }
