@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
+#include <ncurses.h>
+#include <locale.h>
 
 int bx, by;
 int delay_time = 250;
@@ -16,17 +17,16 @@ void delay(int milli_seconds) {
 }
 
 void draw(int board[bx * by]) {
-    printf("\n\n\n");
     for (int x = 0; x < bx; x++) {
         for (int y = 0; y < by; y++) {
             if (board[x * bx + y] == 1) {
-                printf("██");
+                mvprintw(y, x*2, "██");
             } else {
-                printf("  ");
+                mvprintw(y, x*2, "  ");
             }
         }
-        printf("\n");
     }
+    refresh();
 }
 
 int count_live_neighbours(int board[bx * by], int x, int y) {
@@ -85,6 +85,8 @@ int main(int argc, char *argv[]) {
         }
     }
     int counts[bx * by];
+    setlocale(LC_ALL, "");
+    initscr();
     draw(board);
     delay(delay_time);
     for (;;) {
