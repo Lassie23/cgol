@@ -184,12 +184,10 @@ int main(int argc, char *argv[]) {
                 delay(delay_time);
             }
         }
-        refresh();
         switch (ch) {
             case KEY_MOUSE:
                 refresh();
                 if (getmouse(&event) == OK) {
-                    refresh();
                     if (event.bstate & BUTTON1_PRESSED) {
                         if (event.x/2 < bx && event.y < by) {
                             board[event.y * bx + event.x/2] = !board[event.y * bx + event.x/2];
