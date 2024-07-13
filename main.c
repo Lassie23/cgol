@@ -190,8 +190,10 @@ int main(int argc, char *argv[]) {
                 if (getmouse(&event) == OK) {
                     refresh();
                     if (event.bstate & BUTTON1_PRESSED) {
-                        board[event.y * bx + event.x/2] = !board[event.y * bx + event.x/2];
-                        draw(board);
+                        if (event.x/2 < bx && event.y < by) {
+                            board[event.y * bx + event.x/2] = !board[event.y * bx + event.x/2];
+                            draw(board);
+                        }
                     }
                 }
                 break;
