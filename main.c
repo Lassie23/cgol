@@ -36,14 +36,14 @@ void draw(int board[bx * by]) {
 
 int count_live_neighbours(int board[bx * by], int x, int y) {
     return \
-           board[((y - 1) % by) * bx + ((x - 1) % bx)] \
-         + board[((y - 1) % by) * bx +   x           ] \
-         + board[((y - 1) % by) * bx + ((x + 1) % bx)] \
-         + board[  y            * bx + ((x - 1) % bx)] \
-         + board[  y            * bx + ((x + 1) % bx)] \
-         + board[((y + 1) % by) * bx + ((x - 1) % bx)] \
-         + board[((y + 1) % by) * bx +   x           ] \
-         + board[((y + 1) % by) * bx + ((x + 1) % bx)];
+           board[((y+by - 1) % by) * bx + ((x+bx - 1) % bx)] \
+         + board[((y+by - 1) % by) * bx +   x              ] \
+         + board[((y+by - 1) % by) * bx + ((x+bx + 1) % bx)] \
+         + board[  y               * bx + ((x+bx - 1) % bx)] \
+         + board[  y               * bx + ((x+bx + 1) % bx)] \
+         + board[((y+by + 1) % by) * bx + ((x+bx - 1) % bx)] \
+         + board[((y+by + 1) % by) * bx +   x              ] \
+         + board[((y+by + 1) % by) * bx + ((x+bx + 1) % bx)];
 }
 
 int isNumber(char *s) {
