@@ -12,6 +12,7 @@ int survival[] = {2, 3, 0, 0, 0, 0, 0, 0, 0, 0};
 int s_size = 2;
 int birth[] = {3, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int b_size = 1;
+int invert = 1;
 
 void delay(int milli_seconds) {
     // Storing start time
@@ -26,7 +27,7 @@ void draw(int board[bx * by]) {
     clear();
     for (int x = 0; x < bx; x++) {
         for (int y = 0; y < by; y++) {
-            if (board[y * bx + x] == 1) {
+            if (board[y * bx + x] == invert) {
                 mvprintw(y, x*2, "██");
             }
         }
@@ -69,7 +70,7 @@ int isinarray(int val, int *arr, size_t size) {
 
 int main(int argc, char *argv[]) {
     int c;
-    while ((c = getopt(argc, argv, "x:y:d:s:b:")) != -1) {
+    while ((c = getopt(argc, argv, "x:y:d:s:b:i")) != -1) {
         switch (c) {
             case 'x':
                 if (isNumber(optarg)) {
@@ -116,6 +117,9 @@ int main(int argc, char *argv[]) {
                     fprintf (stderr, "Option -%c must be a number.\n", optopt);
                     return 1;
                 }
+                break;
+            case 'i':
+                invert = 0;
                 break;
             case '?':
                 if (optopt == 'x' || optopt == 'y' || optopt == 'd') {
