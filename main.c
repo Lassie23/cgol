@@ -148,6 +148,7 @@ int main(int argc, char *argv[]) {
     clear();
     cbreak();
     mousemask(ALL_MOUSE_EVENTS | REPORT_MOUSE_POSITION, NULL);
+    curs_set(0);
     draw(board);
     delay(delay_time);
     int ch;
