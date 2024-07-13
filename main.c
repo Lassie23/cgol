@@ -3,14 +3,14 @@
 #include <string.h>
 #include <ncurses.h>
 #include <locale.h>
-#include <unistd.h>
+#include <getopt.h>
 #include <ctype.h>
 
 int bx = 50, by = 50;
 int delay_time = 100;
-int survival[] = {2, 3};
+int survival[] = {2, 3, 0, 0, 0, 0, 0, 0, 0, 0};
 int s_size = 2;
-int birth[] = {3};
+int birth[] = {3, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 int b_size = 1;
 
 void delay(int milli_seconds) {
