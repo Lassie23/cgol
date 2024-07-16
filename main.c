@@ -190,7 +190,6 @@ int main(int argc, char *argv[]) {
         }
         switch (ch) {
             case KEY_MOUSE:
-                refresh();
                 if (getmouse(&event) == OK) {
                     if (event.bstate & BUTTON1_PRESSED) {
                         if (event.x/2 < bx && event.y < by) {
